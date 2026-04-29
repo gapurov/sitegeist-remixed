@@ -1,11 +1,15 @@
 # Sitegeist Monorepo
 
-Vite+ workspace for Sitegeist and the local packages it develops against.
+This repository is an easier-to-manage monorepo version of the original
+[Sitegeist](https://github.com/badlogic/sitegeist) project.
+
+For the original upstream project, see
+[github.com/badlogic/sitegeist](https://github.com/badlogic/sitegeist).
 
 ## Structure
 
-- `apps/sitegeist` - browser extension from `badlogic/sitegeist`
-- `apps/sitegeist-site` - marketing site from `badlogic/sitegeist/site`
+- `apps/sitegeist` - Sitegeist browser extension from the original repository
+- `apps/sitegeist-site` - Sitegeist marketing site from the original repository
 - `packages/mini-lit` - local `@mariozechner/mini-lit`
 - `packages/pi-mono/packages/*` - local Pi packages used by Sitegeist
 
