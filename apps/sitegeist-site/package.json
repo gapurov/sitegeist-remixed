@@ -6,10 +6,11 @@
 	"scripts": {
 		"dev": "./run.sh dev",
 		"build": "./run.sh build",
-		"check": "vp exec biome check --write . && vp exec tsc --noEmit"
+		"format": "vp fmt src infra package.json README.md",
+		"lint": "vp lint src infra package.json README.md",
+		"check": "vp check --fix src infra package.json README.md && vp exec tsc --noEmit"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.3.5",
 		"@tailwindcss/vite": "^4.1.14",
 		"@types/node": "^24.5.2",
 		"@types/three": "^0.180.0",

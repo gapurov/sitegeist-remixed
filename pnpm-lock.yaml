@@ -124,9 +124,6 @@ importers:
         specifier: https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz
         version: https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz
     devDependencies:
-      '@biomejs/biome':
-        specifier: 2.3.5
-        version: 2.3.5
       '@tailwindcss/cli':
         specifier: ^4.0.0-beta.14
         version: 4.2.4
@@ -155,9 +152,6 @@ importers:
         specifier: workspace:*
         version: link:../../packages/mini-lit
     devDependencies:
-      '@biomejs/biome':
-        specifier: 2.3.5
-        version: 2.3.5
       '@tailwindcss/vite':
         specifier: ^4.1.14
         version: 4.2.4(@voidzero-dev/vite-plus-core@0.1.20(@types/node@24.12.2)(esbuild@0.27.7)(jiti@2.6.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.3))
