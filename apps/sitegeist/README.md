@@ -4,33 +4,46 @@
 
 An AI assistant that lives in your browser sidebar. Built for collaboration, not autonomy theater. You guide, it executes.
 
-Sitegeist can automate repetitive web tasks, extract data from any website, navigate across pages, fill out forms, compare products, compile research, and transform what it finds into documents, spreadsheets, or whatever you need. It works on any website through a Chrome/Edge side panel, using the AI provider of your choice.
+Sitegeist can navigate pages, fill forms, extract data, compare products, compile research, and turn what it finds into documents or spreadsheets. It runs as a Chromium side panel and uses the AI provider you choose.
 
-Bring your own API key or log in with an existing subscription (Anthropic Claude, OpenAI/ChatGPT, GitHub Copilot, Google Gemini). Your data stays on your machine. Nothing is collected or tracked.
+Bring your own API key or log in with an existing subscription:
 
-## Download & Install
+- Anthropic Claude Pro/Max
+- OpenAI ChatGPT Plus/Pro
+- GitHub Copilot
+- Google Gemini CLI
+
+Settings, API keys, OAuth tokens, sessions, and cost history stay in local browser storage. Only your chat messages and attachments are sent to the provider you select. Sitegeist collects no telemetry.
+
+## Install
 
 Visit [sitegeist.ai](https://sitegeist.ai) for download links and step-by-step installation instructions.
 
-Requires Chrome 141+ or Edge equivalent.
+Requires Chrome 141+ or another Chromium browser with equivalent extension APIs.
 
 ## Development
 
-Install dependencies from the monorepo root:
+From the monorepo root:
 
 ```bash
 vp install
 ```
 
-Start all dev watchers (mini-lit, pi-mono, sitegeist extension, marketing site):
+Start the extension watcher:
+
+```bash
+vp run dev
+```
+
+Start extension, site, and dependency watchers:
 
 ```bash
 vp run dev:all
 ```
 
-Changes in `packages/mini-lit` or `packages/pi-mono` are rebuilt automatically and picked up by the sitegeist watcher.
+Changes in `packages/mini-lit` and `packages/pi-mono` are rebuilt by `dev:all` and picked up by the extension watcher.
 
-To run only the extension watcher without dependencies or the marketing site:
+Run only the extension package:
 
 ```bash
 vp run sitegeist#dev
@@ -46,33 +59,37 @@ vp run sitegeist#dev
    - **Allow user scripts**
    - **Allow access to file URLs**
 
-The extension hot-reloads when the dev watcher rebuilds.
+The dev watcher reloads the extension after rebuilds.
 
 ### First run
 
-On first launch, Sitegeist prompts you to connect at least one AI provider. You can log in with a subscription or enter an API key.
+On first launch, Sitegeist prompts you to connect a provider. You can log in with a subscription for supported providers or enter an API key.
 
-Some subscription logins require the CORS proxy (configurable in Settings > Proxy). The default proxy is `https://proxy.mariozechner.at/proxy`.
+CORS proxying is off by default. Enable and configure it in Settings > Proxy only when a provider or document fetch needs it.
 
 ## Checks
+
+From `apps/sitegeist`:
 
 ```bash
 ./check.sh
 ```
 
-Runs formatting, linting, and type checking for the extension.
-
-The Husky pre-commit hook runs the same checks before each commit.
+Runs formatting, linting, and type checking for the extension through VitePlus.
 
 ## Building
+
+From the monorepo root:
 
 ```bash
 vp run sitegeist#build
 ```
 
-The unpacked extension is written to `dist-chrome/`.
+The unpacked extension is written to `apps/sitegeist/dist-chrome/`.
 
 ## Updating the website
+
+From `apps/sitegeist`:
 
 ```bash
 cd ../sitegeist-site && ./run.sh deploy
