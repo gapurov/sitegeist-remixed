@@ -4,5 +4,5 @@
 	branch = main
 [submodule "packages/pi-mono"]
 	path = packages/pi-mono
-	url = https://github.com/badlogic/pi-mono.git
+	url = https://github.com/earendil-works/pi.git
 	branch = main
