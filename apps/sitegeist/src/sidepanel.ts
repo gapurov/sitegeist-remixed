@@ -2,13 +2,8 @@ import { icon } from "@mariozechner/mini-lit";
 import { Button } from "@mariozechner/mini-lit/dist/Button.js";
 import { Input } from "@mariozechner/mini-lit/dist/Input.js";
 import "@mariozechner/mini-lit/dist/ThemeToggle.js";
-import {
-	Agent,
-	type AgentEvent,
-	type AgentMessage,
-	type AgentState,
-	type AgentTool,
-} from "@mariozechner/pi-agent-core";
+import { Agent } from "@mariozechner/pi-agent-core/dist/agent.js";
+import type { AgentEvent, AgentMessage, AgentState, AgentTool } from "@mariozechner/pi-agent-core";
 import { getModel, getModels, type Model } from "@mariozechner/pi-ai";
 import {
 	ChatPanel,

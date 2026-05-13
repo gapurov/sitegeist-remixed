@@ -14,11 +14,6 @@ If the user did not give you a concrete task, read README.md first.
 - NEVER use inline imports (no `await import(...)`, no `import("pkg").Type`)
 - Always ask before removing functionality or code that appears intentional
 
-## Dependencies
-- `@mariozechner/mini-lit`, `@mariozechner/pi-ai`, `@mariozechner/pi-web-ui`, `@mariozechner/pi-agent-core` are workspace packages managed with `vp add --workspace`
-- Changes to those packages require rebuilding them (the dev watcher handles this)
-- If you need to modify upstream code, edit it under `../../packages/pi-mono` or `../../packages/mini-lit` and rebuild
-
 ## Changelog
 Location: `CHANGELOG.md`
 

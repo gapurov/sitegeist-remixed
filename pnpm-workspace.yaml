@@ -29,6 +29,10 @@ catalogMode: prefer
 overrides:
   vite: "catalog:"
   vitest: "catalog:"
+packageExtensions:
+  "@earendil-works/pi-web-ui":
+    dependencies:
+      "@earendil-works/pi-agent-core": "*"
 peerDependencyRules:
   allowAny:
     - vite

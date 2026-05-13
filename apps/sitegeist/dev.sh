@@ -28,7 +28,7 @@ vp run @mariozechner/mini-lit#dev:tsc &
 MINI_LIT_PID=$!
 
 echo "Starting pi-mono dev server..."
-vp run -r --parallel dev:tsc --filter @mariozechner/pi-ai --filter @mariozechner/pi-web-ui &
+vp run -r --parallel dev:tsc --filter @earendil-works/pi-ai --filter @earendil-works/pi-web-ui &
 PI_MONO_PID=$!
 
 # Wait a moment for dependencies to start building

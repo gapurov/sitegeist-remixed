@@ -5,15 +5,16 @@
   "type": "module",
   "scripts": {
     "dev": "vp run sitegeist#dev",
-    "dev:all": "vp run --parallel --filter sitegeist --filter sitegeist-site --filter @mariozechner/mini-lit --filter @mariozechner/pi-ai --filter @mariozechner/pi-agent-core --filter @mariozechner/pi-web-ui dev",
-    "build": "vp run @mariozechner/mini-lit#build && vp run @mariozechner/pi-tui#build && vp exec --filter @mariozechner/pi-ai -- tsgo -p tsconfig.build.json && vp run @mariozechner/pi-agent-core#build && vp run @mariozechner/pi-web-ui#build && vp run sitegeist#build && vp run sitegeist-site#build",
-    "check": "vp check && vp run @mariozechner/mini-lit#build && vp run @mariozechner/mini-lit#check && vp run @mariozechner/pi-tui#build && vp exec --filter @mariozechner/pi-ai -- tsgo -p tsconfig.build.json && vp run @mariozechner/pi-agent-core#build && vp exec --filter @mariozechner/pi-web-ui -c 'biome check --write --error-on-warnings . && tsc -p tsconfig.build.json --noEmit' && vp run @mariozechner/pi-web-ui#build && vp run pi-web-ui-example#check && vp run sitegeist#check && vp run sitegeist-site#check",
+    "dev:all": "vp run --parallel --filter sitegeist --filter sitegeist-site --filter @mariozechner/mini-lit --filter @earendil-works/pi-ai --filter @earendil-works/pi-agent-core --filter @earendil-works/pi-web-ui dev",
+    "build": "vp run @mariozechner/mini-lit#build && vp run @earendil-works/pi-tui#build && vp exec --filter @earendil-works/pi-ai -- tsgo -p tsconfig.build.json && vp exec --filter @earendil-works/pi-agent-core -- tsgo -p tsconfig.build.json && vp run @earendil-works/pi-web-ui#build && vp run sitegeist#build && vp run sitegeist-site#build",
+    "check": "vp check && vp run @mariozechner/mini-lit#build && vp run @mariozechner/mini-lit#check && vp run @earendil-works/pi-tui#build && vp exec --filter @earendil-works/pi-ai -- tsgo -p tsconfig.build.json && vp exec --filter @earendil-works/pi-agent-core -- tsgo -p tsconfig.build.json && vp exec --filter @earendil-works/pi-web-ui -c 'biome check --write --error-on-warnings . && tsc -p tsconfig.build.json --noEmit' && vp run @earendil-works/pi-web-ui#build && vp run pi-web-ui-example#check && vp run sitegeist#check && vp run sitegeist-site#check",
     "ready": "vp run check && vp run build",
-    "submodules:update": "git submodule update --init --recursive && git submodule update --remote packages/mini-lit packages/pi-mono && vp install"
+    "postinstall": "./scripts/apply-patches.sh",
+    "submodules:update": "vp exec ./scripts/update-submodules.sh"
   },
   "devDependencies": {
     "@biomejs/biome": "catalog:",
-    "@mariozechner/pi-agent-core": "workspace:^",
+    "@mariozechner/pi-agent-core": "workspace:@earendil-works/pi-agent-core@^",
     "@smithy/node-http-handler": "catalog:",
     "@smithy/types": "catalog:",
     "@types/node": "catalog:",
