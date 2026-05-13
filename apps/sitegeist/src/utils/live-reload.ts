@@ -23,8 +23,11 @@ const connectWebSocket = () => {
 			// Reconnect after 2 seconds
 			setTimeout(connectWebSocket, 2000);
 		};
-	} catch (_e) {
+	} catch {
 		// Silent fail if WebSocket not available
 	}
 };
-connectWebSocket();
+
+export const connectLiveReload = () => {
+	connectWebSocket();
+};

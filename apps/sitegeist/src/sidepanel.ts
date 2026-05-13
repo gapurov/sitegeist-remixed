@@ -48,8 +48,12 @@ import { createReplTool } from "./tools/repl/repl.js";
 import { BrowserJsRuntimeProvider, NavigateRuntimeProvider } from "./tools/repl/runtime-providers.js";
 import * as port from "./utils/port.js";
 import "./utils/i18n-extension.js";
-import "./utils/live-reload.js";
+import { connectLiveReload } from "./utils/live-reload.js";
 import { tutorials } from "./tutorials.js";
+
+if (process.env.NODE_ENV === "development") {
+	connectLiveReload();
+}
 
 // Register custom message renderers
 registerNavigationRenderer();
