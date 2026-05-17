@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed GitHub release builds by installing Bun before running Sitegeist tests.
+
 ## [1.0.6] - 2026-05-17
 
 ### Fixed
