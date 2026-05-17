@@ -2,6 +2,18 @@
 
 ## [Unreleased]
 
+## [1.0.4] - 2026-05-17
+
+### Changed
+
+- Changed the default fallback model to GPT-5.5 with medium reasoning on the Codex backend.
+- Put the Intelligence selector before the Speed selector in the chat input.
+- Renamed the reasoning selector title to Intelligence.
+
+### Fixed
+
+- Fixed saved GPT-5.5 chats and last-used models missing the new Speed selector after upgrading.
+
 ## [1.0.3] - 2026-05-17
 
 ### Added
