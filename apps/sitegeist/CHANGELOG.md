@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed local Pi patch application after upstream dependency updates.
+
 ## [1.0.5] - 2026-05-17
 
 ### Fixed
