@@ -231,10 +231,10 @@ index dc8d8ef7..619c10a1 100644
 +	model: Model<"openai-codex-responses">,
 +	options?: OpenAICodexResponsesOptions,
 +): ResponseCreateParamsStreaming["service_tier"] | undefined {
-+	if (options?.serviceTier !== undefined) return options.serviceTier;
++	if (options?.serviceTier !== undefined) return options.serviceTier === "default" ? undefined : options.serviceTier;
 +	if (!options?.speedMode || !model.speedModes?.includes(options.speedMode)) return undefined;
 +	if (options?.speedMode === "fast") return "priority";
-+	return "default";
++	return undefined;
 +}
 +
  // ============================================================================
@@ -360,7 +360,7 @@ diff --git a/packages/ai/test/openai-codex-stream.test.ts b/packages/ai/test/ope
 index 65b88315..941e5631 100644
 --- a/packages/ai/test/openai-codex-stream.test.ts
 +++ b/packages/ai/test/openai-codex-stream.test.ts
-@@ -659,6 +659,61 @@ describe("openai-codex streaming", () => {
+@@ -659,6 +659,63 @@ describe("openai-codex streaming", () => {
  		},
  	);
  
@@ -409,14 +409,16 @@ index 65b88315..941e5631 100644
 +
 +		await streamOpenAICodexResponses(baseModel, context, { apiKey: token, speedMode: "fast" }).result();
 +		await streamOpenAICodexResponses(baseModel, context, { apiKey: token, speedMode: "standard" }).result();
++		await streamOpenAICodexResponses(baseModel, context, { apiKey: token, serviceTier: "default" }).result();
 +		await streamOpenAICodexResponses({ ...baseModel, speedModes: undefined }, context, {
 +			apiKey: token,
 +			speedMode: "fast",
 +		}).result();
 +
 +		expect(capturedBodies[0]?.service_tier).toBe("priority");
-+		expect(capturedBodies[1]?.service_tier).toBe("default");
++		expect(capturedBodies[1]).not.toHaveProperty("service_tier");
 +		expect(capturedBodies[2]).not.toHaveProperty("service_tier");
++		expect(capturedBodies[3]).not.toHaveProperty("service_tier");
 +	});
 +
  	it("does not set session_id/x-client-request-id headers when sessionId is not provided", async () => {
