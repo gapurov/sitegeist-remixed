@@ -118,23 +118,32 @@ chrome.windows.onRemoved.addListener((windowId: number) => {
 // Handle keyboard shortcut - toggle sidepanel open/close
 chrome.commands.onCommand.addListener((command: string, sender?: chrome.tabs.Tab) => {
 	if (command === "toggle-sidepanel") {
-		if (!sender?.windowId) {
-			console.log("[Background] Cannot toggle sidepanel: sender windowId not available");
+		const windowId = sender?.windowId;
+		if (windowId) {
+			toggleSidepanel(windowId);
 			return;
 		}
 
-		const windowId = sender.windowId;
-
-		// Check synchronous cache (populated from storage on startup and updated by port events)
-		if (openSidepanels.has(windowId)) {
-			// Sidepanel is open - close it using Chrome 141+ API
-			closeSidepanel(windowId);
-		} else {
-			// Sidepanel is closed - open it
-			void chrome.sidePanel.open({ windowId });
-		}
+		chrome.windows.getCurrent((window) => {
+			if (window.id) {
+				toggleSidepanel(window.id);
+			} else {
+				console.log("[Background] Cannot toggle sidepanel: windowId not available");
+			}
+		});
 	}
 });
+
+function toggleSidepanel(windowId: number) {
+	// Check synchronous cache (populated from storage on startup and updated by port events)
+	if (openSidepanels.has(windowId)) {
+		// Sidepanel is open - close it using Chrome 141+ API
+		closeSidepanel(windowId);
+	} else {
+		// Sidepanel is closed - open it
+		void chrome.sidePanel.open({ windowId });
+	}
+}
 
 function closeSidepanel(windowId: number, callCloseOnSidePanelAPI: boolean = true) {
 	if (callCloseOnSidePanelAPI) {

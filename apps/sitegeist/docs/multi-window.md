@@ -23,6 +23,7 @@ Sitegeist implements window-scoped session locking using Chrome's port API to pr
 - When sidepanel closed → opens it
 - When sidepanel open → closes it
 - Works independently per window
+- Chrome exposes and lets users override this binding at `chrome://extensions/shortcuts` under "Toggle side panel".
 
 ### Session List Dialog
 
