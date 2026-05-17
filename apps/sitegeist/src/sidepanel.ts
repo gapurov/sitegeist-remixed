@@ -970,30 +970,9 @@ async function initApp() {
 		return;
 	}
 
-	// Check for session in URL
+	// Explicit session URLs resume saved work. Plain opens start fresh.
 	const urlParams = new URLSearchParams(window.location.search);
-	let sessionIdFromUrl = urlParams.get("session");
-	const isNewSession = urlParams.get("new") === "true";
-
-	// If no session in URL and not explicitly creating new, try to load the most recent session
-	if (!sessionIdFromUrl && !isNewSession && storage.sessions) {
-		const latestSessionId = await storage.sessions.getLatestSessionId();
-		if (latestSessionId) {
-			// Try to acquire lock for latest session
-			const lockResponse = await port.sendMessage({
-				type: "acquireLock",
-				sessionId: latestSessionId,
-				windowId: currentWindowId,
-			});
-
-			if (lockResponse.success) {
-				sessionIdFromUrl = latestSessionId;
-				// Update URL to include the latest session
-				updateUrl(latestSessionId);
-			}
-			// If lock fails, fall through to create new session
-		}
-	}
+	const sessionIdFromUrl = urlParams.get("session");
 
 	if (sessionIdFromUrl && storage.sessions) {
 		const sessionData = await storage.sessions.loadSession(sessionIdFromUrl);

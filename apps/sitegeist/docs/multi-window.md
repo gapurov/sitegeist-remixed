@@ -10,14 +10,14 @@ Sitegeist implements window-scoped session locking using Chrome's port API to pr
 
 **First Window** (Cmd+Shift+S on Mac, Ctrl+Shift+S on Windows/Linux):
 - Opens sidepanel
-- Automatically loads last active session
-- Session is locked to this window
+- Starts a fresh new session
+- No session is saved or locked until the first conversation is created
 - Navigation events from tabs in this window are tracked
 
 **Second Window** (Cmd+Shift+S on Mac, Ctrl+Shift+S on Windows/Linux):
 - Opens sidepanel
-- Last session is locked → shows landing page with welcome message
-- Can create new session or select different session from history
+- Starts its own fresh new session
+- Can select a previous session from history
 
 **Keyboard Shortcut** (Cmd+Shift+S on Mac, Ctrl+Shift+S on Windows/Linux):
 - When sidepanel closed → opens it
@@ -90,7 +90,7 @@ Uses port module for session locking and tracks window-specific events. See impl
 
 **Key behaviors**:
 - **Port init**: Calls `port.initialize(currentWindowId)` during app startup
-- **Lock on init**: Tries to acquire lock for latest session, shows landing page if locked
+- **Default start**: Plain sidepanel opens start a fresh session; explicit `?session=<id>` URLs resume saved sessions
 - **Lock on session creation**: Acquires lock when first message creates a sessionId
 - **Window filtering**: Only tracks tab navigation/activation in current window
 - **No manual cleanup**: Port disconnect automatically releases locks on navigation/close
@@ -141,15 +141,15 @@ Port module still handles automatic reconnection after ~5min Chrome inactivity t
 ## Test Scenarios
 
 1. **Basic Isolation**
-   - Window A: Open sidepanel (Cmd+Shift+S) → session loads
-   - Window B: Open sidepanel → landing page (session locked)
+   - Window A: Open sidepanel (Cmd+Shift+S) → fresh session opens
+   - Window B: Open sidepanel → separate fresh session opens
    - Navigate in Window A tabs → only Window A sees events
    - Navigate in Window B tabs → no effect on Window A
 
 2. **New Session Lock**
    - Window A: Create new session, send first message
    - Window A: Wait for response (sessionId assigned, lock acquired)
-   - Window B: Open sidepanel → landing page (Window A's session locked)
+   - Window B: Open sidepanel → separate fresh session opens
    - Window B: Session list → Window A's session shows "Locked" badge
 
 3. **Lock Badges**
@@ -162,7 +162,7 @@ Port module still handles automatic reconnection after ~5min Chrome inactivity t
 
 5. **Sidepanel Close**
    - Window A: Close sidepanel with X button
-   - Window B: Open sidepanel → session loads (lock released)
+   - Window B: Session list → Window A's previous session is selectable
 
 6. **Window Close**
    - Window A: Close entire window
@@ -205,7 +205,7 @@ Port module still handles automatic reconnection after ~5min Chrome inactivity t
 **Core Implementation**:
 - [background.ts](../src/background.ts) - Port handler, lock manager, keyboard shortcut toggle, window close cleanup
 - [utils/port.ts](../src/utils/port.ts) - Centralized port communication with automatic reconnection, type-safe message handling
-- [sidepanel.ts](../src/sidepanel.ts) - Port initialization, window ID filtering, lock acquisition on init and session creation
+- [sidepanel.ts](../src/sidepanel.ts) - Port initialization, window ID filtering, explicit session loading, lock acquisition on session creation
 
 **UI Components**:
 - [dialogs/SessionListDialog.ts](../src/dialogs/SessionListDialog.ts) - Lock badges UI (Current/Locked), lock state querying
