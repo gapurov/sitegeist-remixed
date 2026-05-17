@@ -27,6 +27,7 @@ Use these sections under `## [Unreleased]`:
 
 ### Rules
 - New entries ALWAYS go under `## [Unreleased]`
+- Release notes are product-facing only. Do not include internal process, tooling, or release-flow changes.
 - Append to existing subsections, do not create duplicates
 - NEVER modify already-released version sections
 
@@ -36,7 +37,7 @@ When the user asks to do a release:
 2. Ensure `CHANGELOG.md` has entries under `## [Unreleased]`
 3. Run `./release.sh <major|minor|patch>`
 
-The script bumps the version in `static/manifest.chrome.json`, finalizes the changelog, commits, tags, and pushes. GitHub Actions builds and publishes the release.
+The script bumps the version in `static/manifest.chrome.json`, finalizes the changelog, commits, runs a local build against the release commit, tags, and pushes. GitHub Actions builds and publishes the release.
 
 ## Updating the Website
 When the user asks to update the website:

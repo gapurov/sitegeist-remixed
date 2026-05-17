@@ -105,7 +105,7 @@ Builds the static site and uploads it to `sitegeist.ai`. Requires SSH access to 
 ./release.sh major   # 1.0.0 -> 2.0.0
 ```
 
-Bumps the version in `static/manifest.chrome.json`, commits, tags, and pushes. GitHub Actions builds the extension and creates a release at [github.com/gapurov/sitegeist-mono/releases](https://github.com/gapurov/sitegeist-mono/releases).
+Bumps the version in `static/manifest.chrome.json`, commits, runs a local build against the release commit, tags, and pushes. GitHub Actions builds the extension and creates a release at [github.com/gapurov/sitegeist-mono/releases](https://github.com/gapurov/sitegeist-mono/releases).
 
 ## License
 

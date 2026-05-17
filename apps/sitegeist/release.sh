@@ -52,9 +52,20 @@ fs.writeFileSync('CHANGELOG.md', changelog);
 echo "Running checks..."
 ./check.sh
 
-# Commit, tag, push
+# Commit release metadata
 git add "$MANIFEST" CHANGELOG.md
 git commit -m "Release v$NEW_VERSION"
+
+# Build the exact release commit before tagging and pushing
+echo "Building release commit..."
+vp run build
+
+if [ -n "$(git status --porcelain --ignore-submodules=dirty)" ]; then
+    echo "Error: build produced uncommitted changes after the release commit."
+    exit 1
+fi
+
+# Tag, push
 git tag "$TAG"
 git push origin main
 git push origin "$TAG"
