@@ -9,6 +9,7 @@
 ### Fixed
 
 - Fixed Sitegeist compatibility with the updated Pi agent package exports and stricter checks.
+- Fixed the About tab update check to use the maintained repo's GitHub releases page and avoid false updates when no newer release exists.
 
 ## [1.0.0] - 2026-03-15
 

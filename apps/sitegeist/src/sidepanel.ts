@@ -48,6 +48,7 @@ import { BrowserJsRuntimeProvider, NavigateRuntimeProvider } from "./tools/repl/
 import * as port from "./utils/port.js";
 import "./utils/i18n-extension.js";
 import { connectLiveReload } from "./utils/live-reload.js";
+import { getLatestReleaseVersion, isNewerVersion } from "./utils/version.js";
 import { tutorials } from "./tutorials.js";
 
 if (process.env.NODE_ENV === "development") {
@@ -863,31 +864,15 @@ async function testSteps(): Promise<boolean> {
 // ============================================================================
 // UPDATE CHECK
 // ============================================================================
-function isNewerVersion(latest: string, current: string): boolean {
-	const latestParts = latest.split(".").map(Number);
-	const currentParts = current.split(".").map(Number);
-
-	for (let i = 0; i < Math.max(latestParts.length, currentParts.length); i++) {
-		const l = latestParts[i] || 0;
-		const c = currentParts[i] || 0;
-		if (l > c) return true;
-		if (l < c) return false;
-	}
-	return false;
-}
-
 async function _checkForUpdates() {
 	try {
 		const currentVersion = chrome.runtime.getManifest().version;
 
 		// Fetch latest version
-		const response = await fetch("https://sitegeist.ai/uploads/version.json", {
-			cache: "no-cache",
-		});
-		const data = await response.json();
-		const latestVersion = data.version;
+		const latestVersion = await getLatestReleaseVersion();
+		if (!latestVersion) return;
 
-		// Show dialog only if server version is newer than current version
+		// Show dialog only if the release version is newer than current version
 		if (isNewerVersion(latestVersion, currentVersion)) {
 			// Show update dialog - blocks until extension is updated and restarted
 			await UpdateNotificationDialog.show(latestVersion);

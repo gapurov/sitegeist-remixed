@@ -3,6 +3,7 @@ import { SettingsTab } from "@mariozechner/pi-web-ui";
 import { html, type TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import "../utils/i18n-extension.js";
+import { getLatestReleaseVersion, isNewerVersion, RELEASES_URL } from "../utils/version.js";
 
 @customElement("about-tab")
 export class AboutTab extends SettingsTab {
@@ -22,14 +23,11 @@ export class AboutTab extends SettingsTab {
 
 	private async checkForUpdates() {
 		try {
-			const response = await fetch("https://sitegeist.ai/uploads/version.json", {
-				cache: "no-cache",
-			});
-			const data = await response.json();
+			const latestVersion = await getLatestReleaseVersion();
 			const currentVersion = chrome.runtime.getManifest().version;
 
-			this.latestVersion = data.version;
-			this.updateAvailable = data.version !== currentVersion;
+			this.latestVersion = latestVersion || currentVersion;
+			this.updateAvailable = latestVersion ? isNewerVersion(latestVersion, currentVersion) : false;
 			this.checking = false;
 		} catch (err) {
 			console.warn("[AboutTab] Failed to check for updates:", err);
@@ -39,7 +37,7 @@ export class AboutTab extends SettingsTab {
 	}
 
 	private openUpdatePage = () => {
-		window.open("https://sitegeist.ai/install.html#updating", "_blank");
+		window.open(RELEASES_URL, "_blank");
 	};
 
 	render(): TemplateResult {
