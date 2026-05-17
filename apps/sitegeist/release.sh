@@ -8,8 +8,9 @@ if [ "$BUMP_TYPE" != "major" ] && [ "$BUMP_TYPE" != "minor" ] && [ "$BUMP_TYPE" 
     exit 1
 fi
 
-# Check for uncommitted changes
-if [ -n "$(git status --porcelain)" ]; then
+# Check for uncommitted changes. The pi-mono patch is applied inside a submodule,
+# so ignore submodule worktree dirt while still catching changed submodule pins.
+if [ -n "$(git status --porcelain --ignore-submodules=dirty)" ]; then
     echo "Error: uncommitted changes. Commit or stash first."
     exit 1
 fi
