@@ -10,6 +10,7 @@
 - VitePlus repo. Use `vp`/`vpx`, not npm/npx, for install/add/run/dev/build/check.
 - Local deps live in workspace: `packages/mini-lit`, `packages/pi-mono/packages/*`. Use `vp add --workspace --filter <pkg> <dep>` for workspace links; no sibling `file:../...` deps.
 - `packages/mini-lit` and `packages/pi-mono` are git submodules. Init with `git submodule update --init --recursive`; update with `git submodule update --remote packages/mini-lit packages/pi-mono`.
+- Changes to submodules must be made via files in `patches/`, not by editing submodule files directly.
 
 ## Critical Thinking
 
