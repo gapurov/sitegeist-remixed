@@ -31,9 +31,6 @@ jobs:
           corepack enable
           corepack prepare pnpm@10.33.2 --activate
 
-      - name: Apply local patches
-        run: ./scripts/apply-patches.sh
-
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
