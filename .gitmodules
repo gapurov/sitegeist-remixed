@@ -2,7 +2,9 @@
 	path = packages/mini-lit
 	url = https://github.com/badlogic/mini-lit.git
 	branch = main
+	ignore = dirty
 [submodule "packages/pi-mono"]
 	path = packages/pi-mono
 	url = https://github.com/earendil-works/pi.git
 	branch = main
+	ignore = dirty
