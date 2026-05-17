@@ -186,6 +186,11 @@ function openApiKeysDialog(): Promise<void> {
 	});
 }
 
+function resolveCurrentModelMetadata(model: Model<any> | null | undefined): Model<any> | undefined {
+	if (!model) return undefined;
+	return getModel(model.provider as any, model.id) ?? model;
+}
+
 async function updateAuthLabel() {
 	if (!agent) {
 		authLabel = "";
@@ -330,9 +335,15 @@ const createAgent = async (initialState?: Partial<AgentState>, shouldSave = true
 	if (agentUnsubscribe) {
 		agentUnsubscribe();
 	}
+	const normalizedInitialState = initialState
+		? {
+				...initialState,
+				model: resolveCurrentModelMetadata(initialState.model as Model<any> | undefined) ?? initialState.model,
+			}
+		: undefined;
 
 	// Mark all loaded messages as already recorded (by object identity)
-	for (const msg of initialState?.messages || []) {
+	for (const msg of normalizedInitialState?.messages || []) {
 		if (msg.role === "assistant" && msg.usage?.cost?.total > 0) {
 			recordedCostMessages.add(msg);
 		}
@@ -354,8 +365,8 @@ const createAgent = async (initialState?: Partial<AgentState>, shouldSave = true
 
 	// Determine default model: saved > default for a provider with key > gemini flash fallback
 	let defaultModel: Model<any> | undefined;
-	if (!initialState?.model) {
-		const savedModel = await storage.settings.get<Model<any>>("lastUsedModel");
+	if (!normalizedInitialState?.model) {
+		const savedModel = resolveCurrentModelMetadata(await storage.settings.get<Model<any>>("lastUsedModel"));
 		if (savedModel) {
 			defaultModel = savedModel;
 		} else {
@@ -374,12 +385,12 @@ const createAgent = async (initialState?: Partial<AgentState>, shouldSave = true
 		}
 	}
 	// Final fallback
-	if (!defaultModel && !initialState?.model) {
+	if (!defaultModel && !normalizedInitialState?.model) {
 		defaultModel = getModel("anthropic", "claude-sonnet-4-6");
 	}
 
 	agent = new Agent({
-		initialState: initialState || {
+		initialState: normalizedInitialState || {
 			systemPrompt: SYSTEM_PROMPT,
 			model: defaultModel,
 			thinkingLevel: "medium",
