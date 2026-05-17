@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [1.0.5] - 2026-05-17
+
 ### Fixed
 
 - Fixed stale skill documentation and token-count schema references to the removed `patch` action.
