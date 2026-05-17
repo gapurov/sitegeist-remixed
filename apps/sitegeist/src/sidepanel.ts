@@ -215,21 +215,44 @@ export function getShownSkills(): Map<string, string> {
 // ============================================================================
 // HELPERS
 // ============================================================================
+type UserAuthoredMessage = AgentMessage & {
+	content?: unknown;
+	attachments?: Array<{ fileName: string; extractedText?: string }>;
+};
+
+const isUserAuthoredMessage = (message: AgentMessage): message is UserAuthoredMessage => {
+	const role = (message as { role?: string }).role;
+	return role === "user" || role === "user-with-attachments";
+};
+
+const getTextBlockText = (block: unknown): string => {
+	if (!block || typeof block !== "object") return "";
+	const maybeTextBlock = block as { type?: unknown; text?: unknown };
+	return maybeTextBlock.type === "text" && typeof maybeTextBlock.text === "string" ? maybeTextBlock.text : "";
+};
+
+const getUserAuthoredMessageText = (message: UserAuthoredMessage): string => {
+	const content = message.content;
+	const text =
+		typeof content === "string"
+			? content
+			: Array.isArray(content)
+				? content.map(getTextBlockText).filter(Boolean).join("\n")
+				: "";
+	const attachmentText =
+		message.attachments
+			?.map((attachment) => attachment.extractedText?.trim() || attachment.fileName)
+			.filter(Boolean)
+			.join("\n") || "";
+
+	return [text, attachmentText].filter(Boolean).join("\n");
+};
+
 const generateTitle = (messages: AgentMessage[]): string => {
-	const firstUserMsg = messages.find((m) => m.role === "user");
-	if (!firstUserMsg || firstUserMsg.role !== "user") return "";
+	const firstUserMsg = messages.find(isUserAuthoredMessage);
+	if (!firstUserMsg) return "";
 
-	let text = "";
-	const content = firstUserMsg.content;
-
-	if (typeof content === "string") {
-		text = content;
-	} else {
-		const textBlocks = content.filter((c) => c.type === "text");
-		text = textBlocks.map((c) => c.text || "").join(" ");
-	}
-
-	text = text.trim();
+	const text = getUserAuthoredMessageText(firstUserMsg).trim();
 	if (!text) return "";
 
 	const sentenceEnd = text.search(/[.!?]/);
@@ -240,7 +263,7 @@ const generateTitle = (messages: AgentMessage[]): string => {
 };
 
 const shouldSaveSession = (messages: AgentMessage[]): boolean => {
-	const hasUserMsg = messages.some((m: AgentMessage) => m.role === "user");
+	const hasUserMsg = messages.some(isUserAuthoredMessage);
 	const hasAssistantMsg = messages.some((m: AgentMessage) => m.role === "assistant");
 	return hasUserMsg && hasAssistantMsg;
 };
@@ -283,14 +306,8 @@ const saveSession = async () => {
 		let preview = "";
 		for (const msg of state.messages) {
 			if (preview.length >= 2048) break;
-			if (msg.role === "user") {
-				const text =
-					typeof msg.content === "string"
-						? msg.content
-						: msg.content
-								.filter((c) => c.type === "text")
-								.map((c) => c.text)
-								.join("\n") || "";
+			if (isUserAuthoredMessage(msg)) {
+				const text = getUserAuthoredMessageText(msg);
 				preview += `${text}\n`;
 			} else if (msg.role === "assistant") {
 				const text = msg.content
@@ -583,14 +600,14 @@ const createAgent = async (initialState?: Partial<AgentState>, shouldSave = true
 
 		// Only disable auto-scroll for new sessions with welcome message
 		// Check if this is a fresh session (only has welcome message, no user messages)
-		const hasUserMessage = agent.state.messages.some((m) => m.role === "user");
+		const hasUserMessage = agent.state.messages.some(isUserAuthoredMessage);
 		if (!hasUserMessage) {
 			chatPanel.agentInterface.setAutoScroll(false);
 
 			// Re-enable auto-scroll on first user message
 			let unsubscribe: (() => void) | undefined;
 			unsubscribe = agent.subscribe(() => {
-				const hasUserMsg = agent.state.messages.some((m) => m.role === "user");
+				const hasUserMsg = agent.state.messages.some(isUserAuthoredMessage);
 				if (hasUserMsg && unsubscribe) {
 					chatPanel.agentInterface?.setAutoScroll(true);
 					unsubscribe();

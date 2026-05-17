@@ -59,4 +59,5 @@ export function createUserMessageRenderer(): MessageRenderer<UserMessageWithAtta
 
 export function registerUserMessageRenderer() {
 	registerMessageRenderer("user", createUserMessageRenderer());
+	registerMessageRenderer("user-with-attachments", createUserMessageRenderer());
 }

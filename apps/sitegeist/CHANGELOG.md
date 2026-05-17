@@ -5,6 +5,7 @@
 ### Fixed
 
 - Fixed stale skill documentation and token-count schema references to the removed `patch` action.
+- Fixed chat file attachments not reaching the model in Sitegeist sessions.
 
 ## [1.0.4] - 2026-05-17
 

@@ -13,7 +13,8 @@
 		"format": "vp fmt src scripts static package.json README.md",
 		"lint": "vp lint src scripts static package.json README.md",
 		"typecheck": "vp exec tsc --noEmit",
-		"check": "vp check --fix src scripts static package.json README.md && vp exec tsc --noEmit"
+		"check": "vp check --fix src scripts static package.json README.md && vp exec tsc --noEmit && vp run test",
+		"test": "bun test test"
 	},
 	"dependencies": {
 		"@mariozechner/jailjs": "^0.1.0",

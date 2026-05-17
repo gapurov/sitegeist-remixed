@@ -105,7 +105,10 @@ export function createWelcomeRenderer(agent: Agent, agentInterface: AgentInterfa
 	return {
 		render: (message) => {
 			// Only show if no conversation started yet
-			const hasConversation = agent.state.messages.some((m) => m.role === "user" || m.role === "assistant");
+			const hasConversation = agent.state.messages.some((m) => {
+				const role = (m as { role?: string }).role;
+				return role === "user" || role === "user-with-attachments" || role === "assistant";
+			});
 
 			if (hasConversation) return html``;
 

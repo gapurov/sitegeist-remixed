@@ -1,6 +1,14 @@
 import type { AgentMessage } from "@mariozechner/pi-agent-core";
-import type { Message } from "@mariozechner/pi-ai";
+import type { ImageContent, Message, TextContent } from "@mariozechner/pi-ai";
+import type { Attachment } from "@mariozechner/pi-web-ui";
 import type { NavigationMessage } from "./NavigationMessage.js";
+
+type UserMessageWithAttachments = AgentMessage & {
+	role: "user-with-attachments";
+	content: string | (TextContent | ImageContent)[];
+	timestamp: number;
+	attachments?: Attachment[];
+};
 
 // Helper: Check if a message has toolCall blocks
 function hasToolCalls(msg: Message): boolean {
@@ -25,6 +33,44 @@ function getToolCallIds(msg: Message): Set<string> {
 function isToolResultFor(msg: Message, toolCallIds: Set<string>): boolean {
 	if (msg.role !== "toolResult") return false;
 	return toolCallIds.has(msg.toolCallId);
+}
+
+function isUserMessageWithAttachments(msg: AgentMessage): msg is UserMessageWithAttachments {
+	return (msg as { role?: string }).role === "user-with-attachments";
+}
+
+function convertAttachmentsToContent(attachments: Attachment[]): (TextContent | ImageContent)[] {
+	const content: (TextContent | ImageContent)[] = [];
+	for (const attachment of attachments) {
+		if (attachment.type === "image") {
+			content.push({
+				type: "image",
+				data: attachment.content,
+				mimeType: attachment.mimeType,
+			});
+		} else if (attachment.type === "document" && attachment.extractedText) {
+			content.push({
+				type: "text",
+				text: `\n\n[Document: ${attachment.fileName}]\n${attachment.extractedText}`,
+			});
+		}
+	}
+	return content;
+}
+
+function convertUserMessageWithAttachments(message: UserMessageWithAttachments): Message {
+	const content: (TextContent | ImageContent)[] =
+		typeof message.content === "string" ? [{ type: "text", text: message.content }] : [...message.content];
+
+	if (message.attachments) {
+		content.push(...convertAttachmentsToContent(message.attachments));
+	}
+
+	return {
+		role: "user",
+		content,
+		timestamp: message.timestamp,
+	} as Message;
 }
 
 // Reorder messages so assistant tool calls are immediately followed by their tool results
@@ -83,11 +129,6 @@ export async function browserMessageTransformer(messages: AgentMessage[]): Promi
 			continue;
 		}
 
-		// Filter non-LLM messages
-		if (m.role !== "user" && m.role !== "assistant" && m.role !== "toolResult" && m.role !== "navigation") {
-			continue;
-		}
-
 		if (m.role === "navigation") {
 			const nav = m as NavigationMessage;
 			const tabInfo = nav.tabId !== undefined ? ` (tab id: ${nav.tabId})` : "";
@@ -111,10 +152,12 @@ ${skillsInfo}
 - DO NOT REPEAT THIS MESSAGE BACK TO THE USER!
 </instructions>`,
 			} as Message);
+		} else if (isUserMessageWithAttachments(m)) {
+			transformed.push(convertUserMessageWithAttachments(m));
 		} else if (m.role === "user") {
 			const { attachments: _attachments, ...rest } = m as Message & { attachments?: unknown };
 			transformed.push(rest as Message);
-		} else {
+		} else if (m.role === "assistant" || m.role === "toolResult") {
 			transformed.push(m as Message);
 		}
 	}
