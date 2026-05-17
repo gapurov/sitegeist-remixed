@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-05-17
+
 ### Changed
 
 - Changed sidepanel opens to start a fresh session by default, with previous sessions still available from history.
