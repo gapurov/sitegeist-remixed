@@ -121,7 +121,7 @@ const DEFAULT_MODELS: Record<string, string> = {
 	"minimax-cn": "MiniMax-M2.1",
 	mistral: "devstral-medium-latest",
 	openai: "gpt-4o-mini",
-	"openai-codex": "gpt-5.1-codex-mini",
+	"openai-codex": "gpt-5.5",
 	opencode: "claude-opus-4-6",
 	"opencode-go": "kimi-k2.5",
 	openrouter: "openai/gpt-5.1-codex",
@@ -386,7 +386,7 @@ const createAgent = async (initialState?: Partial<AgentState>, shouldSave = true
 	}
 	// Final fallback
 	if (!defaultModel && !normalizedInitialState?.model) {
-		defaultModel = getModel("anthropic", "claude-sonnet-4-6");
+		defaultModel = getModel("openai-codex", "gpt-5.5");
 	}
 
 	agent = new Agent({
