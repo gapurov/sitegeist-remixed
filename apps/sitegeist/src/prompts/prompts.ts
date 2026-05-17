@@ -417,7 +417,7 @@ Skills are domain-specific libraries you create once and reuse. Instead of repea
 - Supports all fields: name, shortDescription, domainPatterns, library, description, examples
 
 **rewrite** - Rewrite skill (replaces entire fields) - LAST RESORT
-- { action: "rewrite", name: "skill-name", data: { name: "new-name", library: "..." } }
+- { action: "rewrite", name: "skill-name", data: { name, domainPatterns, shortDescription, description, examples, library } }
 - Use update instead whenever possible (more token-efficient)
 - Can change name (old skill deleted, new one created)
 

@@ -75,40 +75,44 @@ await skill({
 ### Update Skill
 
 ```javascript
-// Full field replacement
+// String replacement in specific fields
 await skill({
   action: 'update',
   name: 'github',
-  data: {
-    library: 'window.github = { /* new code */ }',
-    description: 'Updated description'
-  }
-})
-```
-
-Validates library syntax before saving. Merges with existing skill (only updates provided fields).
-
-### Patch Skill
-
-```javascript
-// String replacement in specific fields
-await skill({
-  action: 'patch',
-  name: 'slack',
-  patches: {
+  updates: {
     library: {
-      old_string: '.message-input',
-      new_string: '[data-qa="message_input"]'
+      old_string: '.issue-list',
+      new_string: '[data-testid="issue-list"]'
     },
     description: {
-      old_string: 'Works on all pages',
-      new_string: 'Works on channel pages only'
+      old_string: 'Works on old issue pages',
+      new_string: 'Works on current issue pages'
     }
   }
 })
 ```
 
-Validates library syntax after patching. Safer than full update when changing small parts.
+Validates library syntax after updating. Use this for small, targeted changes.
+
+### Rewrite Skill
+
+```javascript
+// Full field replacement when update is not practical
+await skill({
+  action: 'rewrite',
+  name: 'github',
+  data: {
+    name: 'github',
+    domainPatterns: ['github.com', 'github.com/*/issues'],
+    shortDescription: 'GitHub automation for issues and PRs',
+    description: 'Updated GitHub skill docs...',
+    examples: '// Get issue list\nconst issues = github.getIssues();',
+    library: 'window.github = { getIssues: () => {...} }'
+  }
+})
+```
+
+Validates library syntax before saving. Provide the full skill data when rewriting.
 
 ### Delete Skill
 
@@ -185,7 +189,7 @@ When skill breaks (selectors changed, page updated):
 
 1. **Debug** - Investigate what changed
 2. **Fix** - Update affected function(s)
-3. **Patch or Update** - Use `patch` for small changes, `update` for major changes
+3. **Update or Rewrite** - Use `update` for small string replacements, `rewrite` for full field replacement
 4. **Test** - Verify fix works
 5. **Continue** - Resume original task
 
@@ -193,10 +197,12 @@ When skill breaks (selectors changed, page updated):
 
 Sitegeist ships with built-in skills:
 
+- **derstandard-search** - Search derStandard.at archive and extract articles
 - **google** - Extract search results, featured snippets, related searches
+- **google-calendar-events** - Create Google Calendar events with reminders
 - **google-sheets** - Cell/range operations, formatting, title management
 - **linkedin-engagement** - Collect posts, get comment trees, post replies
-- **whatsapp** - [Coming soon]
+- **whatsapp** - List chats, open chats, read messages, and send messages
 - **youtube** - Video controls, info extraction, transcripts, comments
 
 **Implementation**: [src/tools/skill.ts:37-114](../src/tools/skill.ts)

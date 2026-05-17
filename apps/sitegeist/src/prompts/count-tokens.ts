@@ -142,7 +142,7 @@ export const TOOL_DEFINITIONS = [
 			properties: {
 				action: {
 					type: "string",
-					enum: ["get", "list", "create", "update", "patch", "delete"],
+					enum: ["get", "list", "create", "rewrite", "update", "delete"],
 					description: "Action to perform",
 				},
 				name: {
@@ -159,11 +159,11 @@ export const TOOL_DEFINITIONS = [
 				},
 				data: {
 					type: "object",
-					description: "Skill data (for create/update actions)",
+					description: "Skill data (for create/rewrite actions)",
 				},
-				patches: {
+				updates: {
 					type: "object",
-					description: "Patches to apply (for patch action)",
+					description: "String replacements to apply (for update action)",
 				},
 			},
 			required: ["action"],

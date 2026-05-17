@@ -115,7 +115,7 @@ const navigateRenderer: ToolRenderer<NavigateParams, NavigateResult> = {
 
 **sitegeist Extension:**
 - `repl` - Page JavaScript execution with collapsible code
-- `skill` - Skill management operations (list, get, create, update, delete, patch)
+- `skill` - Skill management operations (list, get, create, update, rewrite, delete)
 - `navigate` - Page navigation with favicon display
 - `debugger` - Browser debugger tool
 
